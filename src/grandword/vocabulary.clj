@@ -253,3 +253,22 @@
 
 (def & filterWorkingWords)
 
+(defn load-dic
+  []
+  (let [line (read-line)
+        parts (string/split line #"\s")
+        mark (first parts)
+        words (rest parts)
+        ss (join "_" words)
+        nn (join "_" parts)
+        query (read-string (str "(? " nn ")"))
+        op (read-string (str "(" mark " " ss ")"))
+        result (case mark
+                 "?" op
+                 "!" op
+                 "$" op
+                 "%" op
+                 "&" op
+                 query)]
+    (do (eval result)
+      (load-dic))))
