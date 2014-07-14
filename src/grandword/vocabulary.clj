@@ -18,7 +18,7 @@
 (def sqlite-db
   {:classname "org.sqlite.JDBC"
    :subprotocol "sqlite"
-   :subname "C:/快盘/grandword/gre/db"})
+   :subname "C:/grandword/gre/db"})
 
 (defn get-phonetic
   [word]
@@ -27,7 +27,7 @@
       (get :phonetic)))
 
 (def dictionary
-  (doto (Dictionary. (file "C:/快盘/grandword/dict/"))
+  (doto (Dictionary. (file "C:/grandword/dict/"))
     .open))
 
 (defn get-stem
@@ -99,11 +99,11 @@
 
 (defn add-word
   [word category]
-  (let [voc (json/read-str (slurp "C:/快盘/grandword/voc/vocabulary.json")
+  (let [voc (json/read-str (slurp "C:/grandword/voc/vocabulary.json")
                :value-fn (fn [key val] val)
                :key-fn name)]
     (if (nil? (get voc word))
-      (with-open [f-out (io/writer "C:/快盘/grandword/voc/vocabulary.json")]
+      (with-open [f-out (io/writer "C:/grandword/voc/vocabulary.json")]
         (do (json/write (assoc voc word category) f-out) (println word "is added successfully!")))
       (println word "already exists!"))))
 
@@ -121,14 +121,14 @@
 
 (defn changeMode
   [word]
-  (let [voc (json/read-str (slurp "C:/快盘/grandword/voc/vocabulary.json")
+  (let [voc (json/read-str (slurp "C:/grandword/voc/vocabulary.json")
                :value-fn (fn [key val] val)
                :key-fn name)]
   (cond
    (nil? (get voc (name word))) (println word "does not exist yet!")
-   (= 0 (get voc (name word))) (with-open [f-out (io/writer "C:/快盘/grandword/voc/vocabulary.json")]
+   (= 0 (get voc (name word))) (with-open [f-out (io/writer "C:/grandword/voc/vocabulary.json")]
                           (do (json/write (assoc voc (name word) 1) f-out) (println word "is switched from familiar to new!")))
-   (= 1 (get voc (name word))) (with-open [f-out (io/writer "C:/快盘/grandword/voc/vocabulary.json")]
+   (= 1 (get voc (name word))) (with-open [f-out (io/writer "C:/grandword/voc/vocabulary.json")]
                           (do (json/write (assoc voc (name word) 0) f-out) (println word "is switched from new to familiar!"))))))
 ;(changeMode "xue")
 (defn get-definition
@@ -179,7 +179,7 @@
 
 (defn filterWorkingWords
   [file]
-  (let [voc (json/read-str (slurp "C:/快盘/grandword/voc/vocabulary.json")
+  (let [voc (json/read-str (slurp "C:/grandword/voc/vocabulary.json")
                :value-fn (fn [key val] val)
                :key-fn name)
         lst (->> file slurp tokenize distinct
@@ -194,12 +194,12 @@
         c1 (count brand-new)
         c2 (count review-lst)]
     (do
-      (with-open [f-out (io/writer "C:/快盘/grandword/brand_new_list.txt" :append true)]
+      (with-open [f-out (io/writer "C:/grandword/brand_new_list.txt" :append true)]
         (binding [*out* f-out]
           (println "----------" (what-is-the-time) "---------")
           (doseq [a brand-new]
             (println a))))
-      (with-open [f-out (io/writer "C:/快盘/grandword/review_list.txt" :append true)]
+      (with-open [f-out (io/writer "C:/grandword/review_list.txt" :append true)]
         (binding [*out* f-out]
           (println "----------" (what-is-the-time) "---------")
           (doseq [a review-lst]
@@ -216,7 +216,7 @@
     (if (empty? stems)
       (println "no definition")
       (doseq [stem stems]
-        (let [voc (json/read-str (slurp "C:/快盘/grandword/voc/vocabulary.json")
+        (let [voc (json/read-str (slurp "C:/grandword/voc/vocabulary.json")
                                  :value-fn (fn [key val] val)
                                  :key-fn name)
               included (cond (= (get voc stem) 1) "new"
