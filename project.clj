@@ -9,6 +9,8 @@
                  [org.clojure/data.json "0.2.3"]
                  [org.clojure/data.csv "0.1.2"]
                  [clj-time "0.6.0"]
-                 [clj-wordnet "0.1.1-SNAPSHOT"]]
+                 [clj-wordnet "0.1.1-SNAPSHOT"]
+                 [org.clojure/java.jdbc "0.3.0"]
+                 [org.xerial/sqlite-jdbc "3.7.2"]]
   :repl-options {:nrepl-middleware [lighttable.nrepl.handler/lighttable-ops]}
-  :jvm-opts ["-Xmx256M"])
+  :jvm-opts ["-Xmx256m"])

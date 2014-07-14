@@ -6,13 +6,25 @@
             [clojure.data.json :as json]
             [incanter.core :as i]
             [clj-time.core :as t]
-            [clj-time.format :as f])
+            [clj-time.format :as f]
+            [clojure.java.jdbc :as jdbc])
   (:import
    [edu.mit.jwi IDictionary Dictionary RAMDictionary]
    [edu.mit.jwi.item IIndexWord ISynset IWordID IWord Word POS]
    [edu.mit.jwi.data ILoadPolicy]
    [edu.mit.jwi.morph WordnetStemmer]
    [edu.mit.jwi.item POS Pointer]))
+
+(def sqlite-db
+  {:classname "org.sqlite.JDBC"
+   :subprotocol "sqlite"
+   :subname "C:/快盘/grandword/gre/db"})
+
+(defn get-phonetic
+  [word]
+  (-> (jdbc/query sqlite-db [(str "select phonetic from vocabs_TB where word = '" word "'")])
+      first
+      (get :phonetic)))
 
 (def dictionary
   (doto (Dictionary. (file "C:/快盘/grandword/dict/"))
@@ -209,9 +221,10 @@
                                  :key-fn name)
               included (cond (= (get voc stem) 1) "new"
                              (= (get voc stem) 0) "familiar"
-                             :else "")]
+                             :else "")
+              phonetic (or (get-phonetic stem) "")]
           (println (apply str (repeat 24 "-")) stem (apply str (repeat 27 "-")))
-          (println (str (apply str (repeat (- (+ 53 (count stem)) (count included)) " ")) included))
+          (println (str phonetic (apply str (repeat (- (+ 53 (count stem)) (count phonetic) (count included)) " ")) included))
           (doseq [item (get-definition stem)]
             (let [defs (if (re-find #"\"" (last item))
                          (second (re-find #"(.+?)\s\"" (last item)))
